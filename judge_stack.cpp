@@ -38,7 +38,6 @@ private:
 bool judge(int ipop,int n){
 	int stack_top;
 	bool top_state=stack.getTop(stack_top);
-//	if(n==0) return false;
 	if(ipop==n-1){
 		if(top_state){
 			if(stack_top==pop_array[ipop]){
