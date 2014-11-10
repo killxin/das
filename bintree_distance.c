@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
+
 typedef struct{
 	char data;
 	int leftchild,rightchild;
