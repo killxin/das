@@ -1,6 +1,8 @@
 #include <malloc.h>
 #include <assert.h>
+#include "graph.h"
 
+/* there are functions about graph */
 static Vertex* Create_Vertex (int start) {
 	Vertex *pv = (Vertex *)malloc(sizeof(Vertex));
 	assert(pv);
@@ -20,49 +22,56 @@ static Edge* Create_Edge (int end, int weight) {
 	return pe;
 }
 
-Vertex* Find_Vertex (Vertex* head, int strat) {
+static Vertex* Find_Vertex (Vertex* head, int strat) {
 	Vertex* pv = head;
 	for(; pv != NULL; pv = pv->next)
 		if(pv->start == start) break;
 	return pv;
 }
 
-Edge* Find_Edge (Edge* nebor, int end) {
+static Edge* Find_Edge (Edge* nebor, int end) {
 	Edge* pe = nebor;
 	for(; pe != NULL; pe = pe->next)
 		if(pe->end == end) break;
 	return pe;
 }
 
+Graph* Create_Graph() {
+	Graph* pg = (Graph *)malloc(sizeof(Graph));
+	assert(pg);
+	pg->num_ver = 0;
+	pg->num_edg = 0;
+	pg->head = NULL;
+	return pg;
+}
+
+/* Insert from head */
 _Bool Insert_Vertex (Graph* pg, int start) {
 	if(pg == NULL) return false;
 	if(Find_Vertex(pg->head, start) == NULL) {
 		pg->num_ver++;
-		if(pg->head == NULL) pg->head = Create_Vertex(start);
-		else {
-			Vertex* pv = pg->head;
-			for(; pv->next != NULL; pv = pv->next);
-			pv->next = Create_Vertex(start);
-		}
+		Vertex* pv = pg->head;
+		pg->head = Create_Vertex(start);
+		assert(pg->head);
+		pg->head->next = pv;
 	}
 	return true;
 }
 
+/* Insert from head */
 _Bool Insert_Edge(Graph* pg, int start, int end, int weight) {
 	if(pg == NULL) return false;
-	if(Insert_Vertex(pg, start)==false) return false;
-	if(Insert_Vertex(pg, end)==false) return false;
+	if(Insert_Vertex(pg, start) == false) return false;
+	if(Insert_Vertex(pg, end) == false) return false;
 	vertex* pv = Find_Vertex(pg->head, start);
 	assert(pv);
 	if(Find_Edge(pv->nebor, end) == NULL) {
 		pg->num_edg++;
 		pv->num_nebor++;
-		if(pv->nebor == NULL) pv->nebor = Create_Edge(end, weight);
-		else {
-			Edge* pe = pv->nebor;
-			for(; pe->next != NULL; pe = pe->next);
-			pe->next = Creat_Edge(end, weight);
-		}
+		Edge* pe = pv->nebor;
+		pv->nebor = Creat_Edge(end, weight);
+		assert(pv->nebor);
+		pv->nebor->next = pe;
 	}
 	return true;
 }
@@ -73,6 +82,17 @@ int Get_Weight (Graph* pg, int start, int end) {
 	Edge* pe = Find_Edge(pv->nebor, end);
 	if(pe == NULL) return -1;
 	else return pe->weight;
+}
+
+_Bool Change_Weight (Graph* pg, int start, int end, int weight) {
+	Vertex* pv = Find_Vertex(pg->head, start);
+	if(pv == NULL) return false;
+	Edge* pe = Find_Edge(pv->nebor, end);
+	if(pe == NULL) return false;
+	else {
+		pe->weight = weight;
+		return true;
+	}
 }
 
 static int Get_FirstNebor (Graph* pg, int start) {
@@ -95,11 +115,12 @@ static int Get_NextNebor (Graph* pg, int start, int end) {
 
 static _Bool Judge_in_Visit(int w, int visit[], int* i) {
 	int j = 0;
-	for(; j <= *i; j++) if(visit[j] == w) return true;
+	for(; j < *i; j++) if(visit[j] == w) return true;
 	return false;
 }
 
 void DFS(Graph* pg, int v, int visit[], int *i) {
+	/* Push to visit */
 	visit[*i] = v; *i++;
 	int w = Get_FirstNebor(pg, v);
 	while(w != -1) {

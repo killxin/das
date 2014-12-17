@@ -17,11 +17,11 @@ struct Graph {
 	int num_edg;
 	Vertex* head;
 };
-Vertex* Find_Vertex (Vertex* head, int strat);
-Edge* Find_Edge (Edge* nebor, int end);
+Graph* Create_Graph();
 _Bool Insert_Vertex (Graph* pg, int start);
 _Bool Insert_Edge(Graph* pg, int start, int end, int weight);
 int Get_Weight (Graph* pg, int start, int end);
+_Bool Change_Weight (Graph* pg, int start, int end, int weight);
 void DFS(Graph* pg, int v, int visit[], int *i);
 
 #endif
