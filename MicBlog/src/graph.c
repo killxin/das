@@ -22,7 +22,7 @@ static Edge* Create_Edge (int end, int weight) {
 	return pe;
 }
 
-static Vertex* Find_Vertex (Vertex* head, int strat) {
+static Vertex* Find_Vertex (Vertex* head, int start) {
 	Vertex* pv = head;
 	for(; pv != NULL; pv = pv->next)
 		if(pv->start == start) break;
@@ -46,8 +46,8 @@ Graph* Create_Graph() {
 }
 
 /* Insert from head */
-_Bool Insert_Vertex (Graph* pg, int start) {
-	if(pg == NULL) return false;
+int Insert_Vertex (Graph* pg, int start) {
+	if(pg == NULL) return 0;
 	if(Find_Vertex(pg->head, start) == NULL) {
 		pg->num_ver++;
 		Vertex* pv = pg->head;
@@ -55,25 +55,25 @@ _Bool Insert_Vertex (Graph* pg, int start) {
 		assert(pg->head);
 		pg->head->next = pv;
 	}
-	return true;
+	return 1;
 }
 
 /* Insert from head */
-_Bool Insert_Edge(Graph* pg, int start, int end, int weight) {
-	if(pg == NULL) return false;
-	if(Insert_Vertex(pg, start) == false) return false;
-	if(Insert_Vertex(pg, end) == false) return false;
-	vertex* pv = Find_Vertex(pg->head, start);
+int Insert_Edge(Graph* pg, int start, int end, int weight) {
+	if(pg == NULL) return 0;
+	if(Insert_Vertex(pg, start) == 0) return 0;
+	if(Insert_Vertex(pg, end) == 0) return 0;
+	Vertex* pv = Find_Vertex(pg->head, start);
 	assert(pv);
 	if(Find_Edge(pv->nebor, end) == NULL) {
 		pg->num_edg++;
 		pv->num_nebor++;
 		Edge* pe = pv->nebor;
-		pv->nebor = Creat_Edge(end, weight);
+		pv->nebor = Create_Edge(end, weight);
 		assert(pv->nebor);
 		pv->nebor->next = pe;
 	}
-	return true;
+	return 1;
 }
 
 int Get_Weight (Graph* pg, int start, int end) {
@@ -84,14 +84,14 @@ int Get_Weight (Graph* pg, int start, int end) {
 	else return pe->weight;
 }
 
-_Bool Change_Weight (Graph* pg, int start, int end, int weight) {
+int Change_Weight (Graph* pg, int start, int end, int weight) {
 	Vertex* pv = Find_Vertex(pg->head, start);
-	if(pv == NULL) return false;
+	if(pv == NULL) return 0;
 	Edge* pe = Find_Edge(pv->nebor, end);
-	if(pe == NULL) return false;
+	if(pe == NULL) return 0;
 	else {
 		pe->weight = weight;
-		return true;
+		return 1;
 	}
 }
 
@@ -113,18 +113,23 @@ static int Get_NextNebor (Graph* pg, int start, int end) {
 	else return pe->end;
 }
 
-static _Bool Judge_in_Visit(int w, int visit[], int* i) {
-	int j = 0;
-	for(; j < *i; j++) if(visit[j] == w) return true;
-	return false;
+int Judge_in_Visit(int w, int* visit, int* i) {
+	int k = 0;
+	for(; k < *i; k++) {
+		if(visit[k] == w) return 1;
+	}
+	return 0;
 }
 
-void DFS(Graph* pg, int v, int visit[], int *i) {
+void DFS(Graph* pg, int v, int* visit, int *i) {
 	/* Push to visit */
-	visit[*i] = v; *i++;
+	visit[*i] = v;
+	(*i)++;
 	int w = Get_FirstNebor(pg, v);
 	while(w != -1) {
-		if(Judge_in_Visit(w, visit, i) == false) DFS(pg, w, visit, i);
+		if(Judge_in_Visit(w, visit, i) == 0) {
+			DFS(pg, w, visit, i);
+		}
 		w = Get_NextNebor(pg, v, w);
 	}
 }

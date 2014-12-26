@@ -1,4 +1,5 @@
 #include <malloc.h> 
+#include <assert.h>
 #include <assert.h> 
 #include "circle.h" 
 
@@ -21,14 +22,14 @@ Circle* Create_Circle() {
 }
 
 /* Insert from head */
-_Bool Insert_Thead (Circle* pc, int num_user) {
-	if(pc == NULL) return false;
+int Insert_Thead (Circle* pc, int num_user) {
+	if(pc == NULL) return 0;
 	Thread* pt = pc->head;
 	pc->head = Create_Thread(num_user);
 	assert(pc->head);
 	pc->num_cir++;
 	pc->head->next = pt;
-	return true;
+	return 1;
 }
 
 Thread* Find_Circle (Circle* pc, int uid) {
