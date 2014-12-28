@@ -22,14 +22,14 @@ static Edge* Create_Edge (int end, int weight) {
 	return pe;
 }
 
-static Vertex* Find_Vertex (Vertex* head, int start) {
+Vertex* Find_Vertex (Vertex* head, int start) {
 	Vertex* pv = head;
 	for(; pv != NULL; pv = pv->next)
 		if(pv->start == start) break;
 	return pv;
 }
 
-static Edge* Find_Edge (Edge* nebor, int end) {
+Edge* Find_Edge (Edge* nebor, int end) {
 	Edge* pe = nebor;
 	for(; pe != NULL; pe = pe->next)
 		if(pe->end == end) break;

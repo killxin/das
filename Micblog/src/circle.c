@@ -32,13 +32,3 @@ int Insert_Thead (Circle* pc, int num_user) {
 	return 1;
 }
 
-Thread* Find_Circle (Circle* pc, int uid) {
-	Thread* pt = pc->head;
-	for(; pt != NULL; pt = pt->next) {
-		int j = 0;
-		for(; j < pt->num_user; j++){
-			if(pt->list[j] == uid) return pt;
-		}
-	}
-	return pt;
-}

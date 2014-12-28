@@ -49,46 +49,60 @@ int Set_Circle(Graph* pg, Circle* pc) {
 	return 1;
 }
 
-void Get_Usernumber(Graph* pg) {
-	printf("user total:	%d\n",pg->num_ver);
-}
-
-void Get_Userlist(Graph* pg) {
-	Vertex* userlist = pg->head;
+void Get_Vertexlist(Graph* pg) {
+	Vertex* vertexlist = pg->head;
 	int n = 1;
-	for(; userlist != NULL; userlist = userlist->next, n++)
-		printf("No.%d	%d\n",n,userlist->start);
+	for(; vertexlist != NULL; vertexlist = vertexlist->next, n++)
+		printf("No.%d	%d\n",n,vertexlist->start);
 }
 
-void Get_Circlenumber(Circle* pc) {
-	printf("circle total:	%d\n",pc->num_cir);
-}
-
-void Get_Circlelist(Circle* pc) {
-	Thread* circlelist = pc->head;
+void Get_Edgelist(Graph* pg) {
+	Vertex* vertexlist = pg->head;
 	int n = 1;
-	for(; circlelist != NULL; circlelist = circlelist->next,n++){
-		printf("circle %d\n",n);
-		int m = 0;
-		for(; m < circlelist->num_user; m++)
-			printf("No.%d	%d\n",m+1,circlelist->list[m]);
-		printf("\n");
+	for(; vertexlist != NULL; vertexlist = vertexlist->next){
+		Edge* edgelist = vertexlist->nebor;
+		for(; edgelist != NULL; edgelist = edgelist->next, n++){
+			printf("No.%d	%d -> %d (%d)\n", n, vertexlist->start, edgelist->end, edgelist->weight);
+		}
 	}
 }
 
-int Judge_Friend (Circle* pc, int user1, int user2) {
-	Thread* pt1 = Find_Circle(pc, user1);
-	Thread* pt2 = Find_Circle(pc, user2);
-	return pt1==pt2;
+Vertex* Find_User(Graph* pg, int user) { return Find_Vertex(pg->head, user); }
+
+Thread* Find_Circle (Circle* pc, int uid) {
+	Thread* pt = pc->head;
+	for(; pt != NULL; pt = pt->next) {
+		int j = 0;
+		for(; j < pt->num_user; j++){
+			if(pt->list[j] == uid) return pt;
+		}
+	}
+	return pt;
 }
 
+int Judge_Friend (Vertex* pv, int user) {
+	Edge* pe = pv->nebor;
+	for(; pe != NULL; pe = pe->next){
+		if(pe->end == user) return 1;
+	}
+	return 0;
+}
+
+void Get_Circlelist(Thread* pt) {
+	int m = 0;
+	for(; m < pt->num_user; m++){
+		printf("No.%d	%d\n",m+1,pt->list[m]);
+	}
+}
+
+/*
 int Get_Frequency (Graph* pg, Circle* pc, int user1, int user2) {
 	if(Judge_Friend(pc, user1, user2) == 0) return -1;
 	int weight12 = Get_Weight(pg, user1, user2);
 	int weight21 = Get_Weight(pg, user2, user1);
 	return weight12+weight21;
 }
-	
+
 int Common_Friend (Circle* pc, int user1, int user2) {
 	if(Judge_Friend(pc, user1, user2)) return -1;
 	Thread* pt1 = Find_Circle(pc, user1);
@@ -103,4 +117,4 @@ int Common_Friend (Circle* pc, int user1, int user2) {
 			count++;
 	return count;
 }
-
+*/

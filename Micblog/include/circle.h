@@ -14,6 +14,5 @@ typedef struct Circle_Type {
 }Circle;
 Circle* Create_Circle();
 int Insert_Thread(Circle* pc, int num_user);
-Thread* Find_Circle(Circle* pc, int uid);
 
 #endif

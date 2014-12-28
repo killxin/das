@@ -24,5 +24,6 @@ int Get_Weight (Graph* pg, int start, int end);
 int Change_Weight (Graph* pg, int start, int end, int weight);
 int Judge_in_Visit(int w, int* visi, int* i);
 void DFS(Graph* pg, int v, int* visit, int *i);
+Vertex* Find_Vertex (Vertex* head, int start);
 
 #endif
