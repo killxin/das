@@ -32,7 +32,7 @@ void main_loop(Graph* graph, Circle* circle) {
 	int n_user;
 	Vertex* p_user;
 	Thread* p_circle;
-	printf("Graph vertex: %d edge: %d\n", graph->num_ver, graph->num_edg);
+	printf("Graph vertex: %d edge: %d circlr: %d\n", graph->num_ver, graph->num_edg, circle->num_cir);
 	while(1) {
 		cmd = rl_gets(blog_state);
 		char *p = strtok(cmd, " ");
@@ -45,31 +45,40 @@ void main_loop(Graph* graph, Circle* circle) {
 				else {
 					n_user = atoi(p);
 					p_user = Find_User(graph, n_user);
-					if(p_user) { blog_state = S_USER; }
+					if(p_user) {
+						blog_state = S_USER;
+						printf("Userid: %d friend: %d\n", n_user, p_user->num_nebor);
+					}
 					else { printf("User isn't exist\n"); }
 				}
 			}
 			else if(strcmp(p, "info") == 0) {
 				p = strtok(NULL, " ");
-				if(strcmp(p, "v") == 0) { Get_Vertexlist(graph); }
+				if(p == NULL) { printf("v for vertex, e for edge\n"); }
+				else if(strcmp(p, "v") == 0) { Get_Vertexlist(graph); }
 				else if(strcmp(p, "e") == 0) { Get_Edgelist(graph); }
 				else { printf("v for vertex, e for edge\n"); }
 			}
+			else if(strcmp(p, "q") == 0) { printf("exit to quit\n"); }
 			else { printf("Unknown command '%s'\n", p); }
 		}
 		else if(blog_state == S_USER) {
 			if(strcmp(p, "q") == 0) { blog_state = S_GRAPH; }
 			else if(strcmp(p, "circle") == 0) {
 				p_circle = Find_Circle(circle, n_user);
-				if (p_circle) { blog_state = S_CIRCLE; }
-				else { printf("Can't find circle\n"); }
+				if (p_circle) {
+					blog_state = S_CIRCLE;
+					printf("Circle user: %d\n", p_circle->num_user);
+				}
+				else { assert(0); }
 			}
 			else if(strcmp(p, "friend") == 0) {
 				p = strtok(NULL, " ");
 				if(p == NULL){ printf("userid\n"); }
 				else {
 					int user = atoi(p);
-					if(Judge_Friend(p_user, user)){ printf("%d is %d's friend\n", user, n_user); }
+					if(user == 0) { printf("userid\n"); }
+					else if(Judge_Friend(p_user, user)){ printf("%d is %d's friend\n", user, n_user); }
 					else { printf("%d isn't %d's friend\n", user, n_user); }
 				}
 			}
@@ -79,7 +88,8 @@ void main_loop(Graph* graph, Circle* circle) {
 			if(strcmp(p, "q") == 0) { blog_state = S_USER; }
 			else if(strcmp(p, "info") == 0) {
 				p = strtok(NULL, " ");
-				if(strcmp(p, "u") == 0) { Get_Circlelist(p_circle); }
+				if(p == NULL) { printf("u for userid in circle\n"); }
+				else if(strcmp(p, "u") == 0) { Get_Circlelist(p_circle); }
 				else { printf("u for userid in circle\n"); }
 			}
 		}
