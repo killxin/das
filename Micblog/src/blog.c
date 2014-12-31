@@ -13,17 +13,17 @@
 */
 
 int Deal_Friend (Graph* pg, int start, int end) {
-	/* if two users are friend, weight is 3.
+	/* if two users are friend, weight is 10.
 	   if they have been friends, information is ignored*/
-	return (Insert_Edge(pg, start, end, 3) && Insert_Edge(pg, end, start, 3));
+	return (Insert_Edge(pg, start, end, 10) && Insert_Edge(pg, end, start, 10));
 }
 
 int Deal_At (Graph* pg, int start, int end) {
 	/* if they aren't friend, weight is set to 1 
 	   once one at the other, weight ++ */
 	int w = Get_Weight(pg, start, end);
-	if(w == -1) return Insert_Edge(pg, start, end, 1);
-	else return Change_Weight(pg, start, end, w + 1);
+	if(w == -1) return Insert_Edge(pg, start, end, 1) && Insert_Edge(pg, end, start, 1);
+	else return Change_Weight(pg, start, end, w + 1) && Change_Weight(pg, end, start, w + 1);
 }
 	
 int Set_Circle(Graph* pg, Circle* pc) {

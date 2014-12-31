@@ -20,9 +20,7 @@ char* rl_gets(int blog_state) {
 	else if(blog_state == S_USER){ line_read = readline("(user) "); }
 	else if(blog_state == S_CIRCLE){ line_read = readline("(circle) "); } 
 	else { assert(0); }
-	if (line_read && *line_read) {
-		add_history(line_read);
-	}
+	if (line_read && *line_read) { add_history(line_read); }
 	return line_read;
 }
 
@@ -63,7 +61,10 @@ void main_loop(Graph* graph, Circle* circle) {
 			else { printf("Unknown command '%s'\n", p); }
 		}
 		else if(blog_state == S_USER) {
-			if(strcmp(p, "q") == 0) { blog_state = S_GRAPH; }
+			if(strcmp(p, "q") == 0) {
+				blog_state = S_GRAPH;
+				printf("Graph vertex: %d edge: %d circlr: %d\n", graph->num_ver, graph->num_edg, circle->num_cir);
+			}
 			else if(strcmp(p, "circle") == 0) {
 				p_circle = Find_Circle(circle, n_user);
 				if (p_circle) {
@@ -85,7 +86,10 @@ void main_loop(Graph* graph, Circle* circle) {
 			else { printf("Unknown command '%s'\n", p); }
 		}
 		else {
-			if(strcmp(p, "q") == 0) { blog_state = S_USER; }
+			if(strcmp(p, "q") == 0) {
+				blog_state = S_USER;
+				printf("Userid: %d friend: %d\n", n_user, p_user->num_nebor);
+			}
 			else if(strcmp(p, "info") == 0) {
 				p = strtok(NULL, " ");
 				if(p == NULL) { printf("u for userid in circle\n"); }
@@ -118,8 +122,6 @@ int main(int argc, char *argv[]) {
 	Graph* graph = Create_Graph();
 	Circle* circle = Create_Circle();
 	unsigned u1, u2;
-	char at;
-	int n = 10;
 	while (!feof(fri)) {
 		fscanf(fri, "%d %d", &u1, &u2);
 		assert(Deal_Friend(graph, u1, u2));
