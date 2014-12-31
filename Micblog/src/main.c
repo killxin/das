@@ -83,6 +83,12 @@ void main_loop(Graph* graph, Circle* circle) {
 					else { printf("%d isn't %d's friend\n", user, n_user); }
 				}
 			}
+			else if(strcmp(p, "info") == 0) {
+				p = strtok(NULL, " ");
+				if(p == NULL){ printf("f for all friends\n"); }
+				else if(strcmp(p, "f") == 0) { Get_Friendlist(graph, p_user); }
+				else { printf("f for all friends"); }
+			}
 			else { printf("Unknown command '%s'\n", p); }
 		}
 		else {

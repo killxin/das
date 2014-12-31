@@ -13,9 +13,9 @@
 */
 
 int Deal_Friend (Graph* pg, int start, int end) {
-	/* if two users are friend, weight is 10.
+	/* if two users are friend, weight is 3.
 	   if they have been friends, information is ignored*/
-	return (Insert_Edge(pg, start, end, 10) && Insert_Edge(pg, end, start, 10));
+	return (Insert_Edge(pg, start, end, 3) && Insert_Edge(pg, end, start, 3));
 }
 
 int Deal_At (Graph* pg, int start, int end) {
@@ -95,26 +95,74 @@ void Get_Circlelist(Thread* pt) {
 	}
 }
 
-/*
-int Get_Frequency (Graph* pg, Circle* pc, int user1, int user2) {
-	if(Judge_Friend(pc, user1, user2) == 0) return -1;
+void Get_Friendlist(Graph* pg, Vertex* pv) {
+	Edge* pe = pv->nebor;
+	int n = 1;
+	for(; pe != NULL; pe = pe->next, n++) {
+		printf("No.%d	%d (%d)\n", n, pe->end, Get_Weight(pg, pv->start, pe->end));
+	}
+}
+	
+static int Get_Frequency (Graph* pg, int user1, int user2) {
+	Vertex* pv = Find_Vertex(pg->head, start);
+	if(pv == NULL) return -1;
+	if(Judge_Friend(pv, user2) == 0) return -1;
 	int weight12 = Get_Weight(pg, user1, user2);
 	int weight21 = Get_Weight(pg, user2, user1);
 	return weight12+weight21;
 }
 
-int Common_Friend (Circle* pc, int user1, int user2) {
-	if(Judge_Friend(pc, user1, user2)) return -1;
-	Thread* pt1 = Find_Circle(pc, user1);
-	Thread* pt2 = Find_Circle(pc, user2);
-	int i, count = 0;
-	int* pl1 = pt1->list;
-	for(i = 0; i < pt1->num_user; i++)
-		if(Judge_Friend(pc, pt1->list[i], user2))
-			count++;
-	for(i = 0; i < pt2->num_user; i++)
-		if(Judge_Friend(pc, user1, pt2->list[i]))
-			count++;
+int Top_Frequency (Graph* pg, Thread* pt, Rela* pr) {
+	int num = pt->num_user * (pt->num_user - 1) / 2;
+	pr = (Rela*)malloc(sizeof(Rela)*num);
+	int i = 0, j = 0;
+	num = 0;
+	for(; i < num_user; i++)
+		for(j = i + 1; j < num_user; j++) {
+			int w = Get_Frequency(pg, pt->list[i], pt->list[j]);
+			if(w != -1) {
+				pr[num]->start = pt->list[i];
+				pr[num]->end = pt->list[j];
+				pr[num]->weight = w;
+				num++;
+			}
+		}
+	Rela_Sort(pr, num);
+	return num;
+}
+
+static int Get_Association (Graph* pg, int user1, int user2) {
+	int count = 0;
+	Vertex* pv1 = Find_Vertex(pg->head, user1);
+	if(pv1 = NULL) return -1;
+	Vertex* pv2 = Find_Vertex(pg->head, user2);
+	if(pv2 = NULL) return -1;
+	Edge* pe1, pe2;
+	for(pe1 = pv1->nebor; pe1 != NULL; pe1 = pe1->next)
+		for(pe2 = pv2->nebor; pe2 != NULL; pe2 = pe2->next) {
+			if(pe1->end == pe2->end) {
+				count++;
+				break;
+			}
+		}
 	return count;
 }
-*/
+
+int Top_Association(Graph* pg, Rela* pv) {
+	int num = pg->num_ver * (pg->num_ver - 1) / 2;
+	pr = (Rela*)malloc(sizeof(Rela)*num);
+	num = 0;
+	Vertex* pv1, pv2;
+	for(pv1 = pg->head; pv1 != NULL; pv1 = pv1->next)
+		for(pv2 = pv1->next; pv2 != NULL; pv2 = pv2->next) {
+			int w = Get_Association(pg, pv1->start, pv2->start);
+			if(w != -1) {
+				pr[num]->start = pv1->start;
+				pr[num]->end = pv2->start;
+				pr[num]->weight = w;
+				num++;
+			}
+		}
+	Rela_Sort(pr, num);
+	return num;
+}

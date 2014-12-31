@@ -6,7 +6,7 @@ CFILES	= $(shell find src/ -name "*.c")
 OBJS	= $(CFILES:.c=.o)
 
 micblog: $(OBJS)
-	  $(CC)	-o micblog $(OBJS) $(CFLAGS)	-lreadline
+	  $(CC)	-o micblog $(OBJS) $(CFLAGS) -lreadline
 run:	micblog	newfriends.txt	at.txt
 	./micblog newfriends.txt at.txt 2>&1 | tee log.txt
 clean:
