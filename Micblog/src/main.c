@@ -30,6 +30,8 @@ void main_loop(Graph* graph, Circle* circle) {
 	int n_user;
 	Vertex* p_user;
 	Thread* p_circle;
+	int n_fre, n_ass;
+	Rela *p_fre, *p_ass;
 	printf("Graph vertex: %d edge: %d circlr: %d\n", graph->num_ver, graph->num_edg, circle->num_cir);
 	while(1) {
 		cmd = rl_gets(blog_state);
@@ -56,6 +58,26 @@ void main_loop(Graph* graph, Circle* circle) {
 				else if(strcmp(p, "v") == 0) { Get_Vertexlist(graph); }
 				else if(strcmp(p, "e") == 0) { Get_Edgelist(graph); }
 				else { printf("v for vertex, e for edge\n"); }
+			}
+			else if(strcmp(p, "top") == 0) {
+				p = strtok(NULL, " ");
+				if(p == NULL) { printf("a n for Top n Association\n"); }
+				else if(strcmp(p, "a") == 0) {
+					p = strtok(NULL, " ");
+					p_ass = Top_Association(graph, &n_ass);
+					int n = n_ass;
+					if(p != NULL) {
+						int m = atoi(p);
+						if(m == 0) printf("n error\n");
+						else n = (n > m ? m : n);
+					}
+					else { printf("n is %d default\n", n_ass); }
+					int i = 0;
+					for(; i < n; i++){
+						printf("Top Association %d:\t%d->%d(%d)\n", i+1, p_ass[i].start, p_ass[i].end, p_ass[i].weight);
+					}
+				}
+				else { printf("a n for Top n Association"); }
 			}
 			else if(strcmp(p, "q") == 0) { printf("exit to quit\n"); }
 			else { printf("Unknown command '%s'\n", p); }
@@ -102,6 +124,27 @@ void main_loop(Graph* graph, Circle* circle) {
 				else if(strcmp(p, "u") == 0) { Get_Circlelist(p_circle); }
 				else { printf("u for userid in circle\n"); }
 			}
+			else if(strcmp(p, "top") == 0) {
+				p = strtok(NULL, " ");
+				if(p == NULL) { printf("f n for Top n Frequency\n"); }
+				else if(strcmp(p, "f") == 0) {
+					p = strtok(NULL, " ");
+					p_fre = Top_Frequency(graph, circle->head, &n_fre);
+					int n = n_fre;
+					if(p != NULL) {
+						int m = atoi(p);
+						if(m == 0) printf("n error\n");
+						else n = (n > m ? m : n);
+					}
+					else { printf("n is %d default\n", n_fre); }
+					int i = 0;
+					for(; i < n; i++){
+						printf("Top Frequency %d:\t%d->%d(%d)\n", i+1, p_fre[i].start, p_fre[i].end, p_fre[i].weight);
+					}
+				}
+				else { printf("f n for Top n Frequency\n"); }
+			}
+			else { printf("Unknown command '%s'\n", p); }
 		}
 	}
 }

@@ -19,7 +19,7 @@ Thread* Find_Circle(Circle* pc, int uid);
 int Judge_Friend (Vertex* pv, int user);
 void Get_Circlelist(Thread* pt);
 void Get_Friendlist(Graph* pg, Vertex* pv);
-int Top_Frequency (Graph* pg, Thread* pt, Rela* pr);
-int Top_Association(Graph* pg, Rela* pv);
+Rela* Top_Frequency (Graph* pg, Thread* pt, int* n);
+Rela* Top_Association(Graph* pg, int* n);
 
 #endif

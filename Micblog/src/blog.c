@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "graph.h"
 #include "circle.h"
+#include "blog.h"
 
 /*
  Definition :
@@ -102,9 +103,50 @@ void Get_Friendlist(Graph* pg, Vertex* pv) {
 		printf("No.%d	%d (%d)\n", n, pe->end, Get_Weight(pg, pv->start, pe->end));
 	}
 }
+
+static Shift_Down (Rela* pr, int start, int m) {
+	int i = start, j = 2 * i + 1;
+	Rela temp;
+	temp.start = pr[i].start;
+	temp.end = pr[i].end;
+	temp.weight = pr[i].weight;
+	while(j <= m) {
+		if(j < m && pr[j].weight > pr[j + 1].weight) j++;
+		if(temp.weight <= pr[j].weight) break;
+		else {
+			pr[i].start = pr[j].start;
+			pr[i].end = pr[j].end;
+			pr[i].weight = pr[j].weight;
+			i = j;
+			j = 2 * i + 1;
+		}
+	}
+	pr[i].start = temp.start;
+	pr[i].end = temp.end;
+	pr[i].weight = temp.weight;
+}
+
+static void Rela_Sort(Rela* pr, int num) {
+	int i = (num - 2) / 2;
+	Rela temp;
+	for(; i >= 0; i--) Shift_Down(pr, i, num - 1);
+	for(i = num - 1; i >= 0; i--) {
+		temp.start = pr[0].start;
+		temp.end = pr[0].end;
+		temp.weight = pr[0].weight;
+		pr[0].start = pr[i].start;
+		pr[0].end = pr[i].end;
+		pr[0].weight = pr[i].weight;
+		pr[i].start = temp.start;
+		pr[i].end = temp.end;
+		pr[i].weight = temp.weight;
+		Shift_Down(pr, 0, i - 1);
+	}
+}
+	
 	
 static int Get_Frequency (Graph* pg, int user1, int user2) {
-	Vertex* pv = Find_Vertex(pg->head, start);
+	Vertex* pv = Find_Vertex(pg->head, user1);
 	if(pv == NULL) return -1;
 	if(Judge_Friend(pv, user2) == 0) return -1;
 	int weight12 = Get_Weight(pg, user1, user2);
@@ -112,32 +154,34 @@ static int Get_Frequency (Graph* pg, int user1, int user2) {
 	return weight12+weight21;
 }
 
-int Top_Frequency (Graph* pg, Thread* pt, Rela* pr) {
+Rela* Top_Frequency (Graph* pg, Thread* pt, int* n) {
 	int num = pt->num_user * (pt->num_user - 1) / 2;
-	pr = (Rela*)malloc(sizeof(Rela)*num);
+	Rela* pr = (Rela*)malloc(sizeof(Rela)*num);
+	assert(pr);
 	int i = 0, j = 0;
 	num = 0;
-	for(; i < num_user; i++)
-		for(j = i + 1; j < num_user; j++) {
+	for(; i < pt->num_user; i++)
+		for(j = i + 1; j < pt->num_user; j++) {
 			int w = Get_Frequency(pg, pt->list[i], pt->list[j]);
 			if(w != -1) {
-				pr[num]->start = pt->list[i];
-				pr[num]->end = pt->list[j];
-				pr[num]->weight = w;
+				pr[num].start = pt->list[i];
+				pr[num].end = pt->list[j];
+				pr[num].weight = w;
 				num++;
 			}
 		}
 	Rela_Sort(pr, num);
-	return num;
+	*n = num;
+	return pr;
 }
 
 static int Get_Association (Graph* pg, int user1, int user2) {
 	int count = 0;
 	Vertex* pv1 = Find_Vertex(pg->head, user1);
-	if(pv1 = NULL) return -1;
+	if(pv1 == NULL) return -1;
 	Vertex* pv2 = Find_Vertex(pg->head, user2);
-	if(pv2 = NULL) return -1;
-	Edge* pe1, pe2;
+	if(pv2 == NULL) return -1;
+	Edge *pe1, *pe2;
 	for(pe1 = pv1->nebor; pe1 != NULL; pe1 = pe1->next)
 		for(pe2 = pv2->nebor; pe2 != NULL; pe2 = pe2->next) {
 			if(pe1->end == pe2->end) {
@@ -148,21 +192,24 @@ static int Get_Association (Graph* pg, int user1, int user2) {
 	return count;
 }
 
-int Top_Association(Graph* pg, Rela* pv) {
-	int num = pg->num_ver * (pg->num_ver - 1) / 2;
-	pr = (Rela*)malloc(sizeof(Rela)*num);
-	num = 0;
-	Vertex* pv1, pv2;
+Rela* Top_Association(Graph* pg, int* n) {
+	int size = pg->num_ver * (pg->num_ver - 1) / 2;
+	Rela* pr = (Rela*)malloc(sizeof(Rela)*size);
+	assert(pr);
+	int num = 0;
+	Vertex *pv1, *pv2;
 	for(pv1 = pg->head; pv1 != NULL; pv1 = pv1->next)
 		for(pv2 = pv1->next; pv2 != NULL; pv2 = pv2->next) {
 			int w = Get_Association(pg, pv1->start, pv2->start);
 			if(w != -1) {
-				pr[num]->start = pv1->start;
-				pr[num]->end = pv2->start;
-				pr[num]->weight = w;
+				assert(num < size);
+				pr[num].start = pv1->start;
+				pr[num].end = pv2->start;
+				pr[num].weight = w;
 				num++;
 			}
 		}
 	Rela_Sort(pr, num);
-	return num;
+	*n = num;
+	return pr;
 }
