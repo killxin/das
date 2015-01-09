@@ -1,6 +1,5 @@
 #include <malloc.h> 
 #include <assert.h>
-#include <assert.h> 
 #include "circle.h" 
 
 static Thread* Create_Thread (int num_user) {

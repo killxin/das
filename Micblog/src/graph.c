@@ -113,6 +113,7 @@ static int Get_NextNebor (Graph* pg, int start, int end) {
 	else return pe->end;
 }
 
+/* used in DFS and Set_Circle */
 int Judge_in_Visit(int w, int* visit, int* i) {
 	int k = 0;
 	for(; k < *i; k++) {
@@ -121,6 +122,7 @@ int Judge_in_Visit(int w, int* visit, int* i) {
 	return 0;
 }
 
+/* used in Set_Circle */
 void DFS(Graph* pg, int v, int* visit, int *i) {
 	/* Push to visit */
 	visit[*i] = v;
