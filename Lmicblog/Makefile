@@ -7,10 +7,15 @@ OBJS	= $(CFILES:.c=.o)
 
 weibo: $(OBJS)
 	  $(CC)	-o micblog $(OBJS) $(CFLAGS) -lreadline
+
 run:	micblog	testfile/newfriends.txt	testfile/at.txt
 	./micblog testfile/newfriends.txt testfile/at.txt 2>&1 | tee log.txt
+
 test1:	micblog	testfile/newfriends1.txt testfile/at1.txt
 	./micblog testfile/newfriends1.txt testfile/at1.txt 2>&1 | tee log.txt
+
+test2:	micblog	testfile/newfriends2.txt testfile/at2.txt
+	./micblog testfile/newfriends2.txt testfile/at2.txt 2>&1 | tee log.txt
 
 submit:
 	tar -cvf ./micblog.tar ./

@@ -147,7 +147,7 @@ void main_loop(Graph* graph, Circle* circle) {
 				p = strtok(NULL, " ");
 				if(p == NULL) { printf("a n for Top n Association\n"); }
 				else if(strcmp(p, "a") == 0) { graph_association(); }
-				else { printf("a n for Top n Association"); }
+				else { printf("a n for Top n Association\n"); }
 			}
 			else if(strcmp(p, "q") == 0) { break; }
 			else {
