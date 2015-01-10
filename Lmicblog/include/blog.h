@@ -21,5 +21,6 @@ Rela* Top_Frequency (Graph* pg, Thread* pt, int* n);
 Rela* Top_Association(Graph* pg, int* n);
 Rela* User_Frequency(Vertex* pv, int* n);
 Rela* User_Association(Graph* pg, Vertex* pv, int* n);
+void Common_Friend(Graph* pg, int start, int end);
 
 #endif

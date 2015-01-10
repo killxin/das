@@ -194,6 +194,21 @@ Rela* Top_Association(Graph* pg, int* n) {
 	return pr;
 }
 
+void Common_Friend(Graph* pg, int start, int end) {
+	Vertex* pv1 = Find_Vertex(pg->head, start);
+	Vertex* pv2 = Find_Vertex(pg->head, end);
+	Edge *pe1, *pe2;
+	int n = 1;
+	for(pe1 = pv1->nebor; pe1 != NULL; pe1 = pe1->next)
+		for(pe2 = pv2->nebor; pe2 != NULL; pe2 = pe2->next) {
+			if(pe1->end == pe2->end) {
+				printf("No.%d\t%d\n", n, pe1->end);
+				n++;
+				break;
+			}
+		}
+}
+
 Rela* User_Frequency(Vertex* pv, int* n) {
 	int size = pv->num_nebor;
 	Rela* pr = (Rela*)malloc(sizeof(Rela)*size);

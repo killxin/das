@@ -125,6 +125,20 @@ void circle_frequency() {
 	free(p_fre);
 }
 
+void common_friend() {
+	p = strtok(NULL, " ");
+	if(p == NULL) { printf("user1 user2\n"); }
+	else {
+		int u1 = atoi(p);
+		p = strtok(NULL, " ");
+		if(p == NULL) { printf("user1 user2\n"); }
+		else {
+			int u2 = atoi(p);
+			Common_Friend(graph, u1, u2);
+		}
+	}
+}
+
 void main_loop(Graph* graph, Circle* circle) {
 	char *cmd;
 	blog_state = S_GRAPH;
@@ -149,10 +163,11 @@ void main_loop(Graph* graph, Circle* circle) {
 				else if(strcmp(p, "a") == 0) { graph_association(); }
 				else { printf("a n for Top n Association\n"); }
 			}
+			else if(strcmp(p, "cf") == 0) { common_friend(); }
 			else if(strcmp(p, "q") == 0) { break; }
 			else {
 				printf("Unknown command '%s'\n", p);
-				printf("user\ninfo\ntop\nq\nexit\n");
+				printf("user\ninfo\ncf\ntop\nq\nexit\n");
 			}
 		}
 		else if(blog_state == S_USER) {
